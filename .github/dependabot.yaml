@@ -1,0 +1,47 @@
+version: 2
+updates:
+  # GitHub actions updates
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    schedule:
+      interval: 'daily'
+    groups:
+      actions:
+        patterns:
+          - '*'
+
+  # Dependency updates
+  - package-ecosystem: npm
+    directory: /
+    target-branch: 'main'
+    schedule:
+      interval: weekly
+    ignore:
+      # ignore all patch upgrades
+      - dependency-name: '*'
+        update-types: ['version-update:semver-patch']
+      # typescript-eslint does not support TypeScript 7 yet ("typescript-eslint
+      # does not support TS 7.0"), so a major TypeScript bump fails `pnpm lint`
+      # and, because these updates are grouped, blocks everything grouped with
+      # it. Drop this once typescript-eslint supports TS 7.
+      - dependency-name: 'typescript'
+        update-types: ['version-update:semver-major']
+    open-pull-requests-limit: 10
+    versioning-strategy: increase
+    pull-request-branch-name:
+      separator: '-'
+    groups:
+      eslint:
+        patterns:
+          - 'eslint'
+          - 'eslint-config-prettier'
+          - '@typescript-eslint/*'
+      types:
+        patterns:
+          - '@types/*'
+      prettier:
+        patterns:
+          - 'prettier'
+      everything-else:
+        patterns:
+          - '*'

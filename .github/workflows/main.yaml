@@ -1,0 +1,19 @@
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+# Every job here only reads the repository. The reusable workflows cannot widen
+# this, so it caps lint and test alike.
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: Linter
+    uses: ./.github/workflows/lint.yaml
+
+  test:
+    name: Tests
+    uses: ./.github/workflows/test.yaml
